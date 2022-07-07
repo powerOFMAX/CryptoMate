@@ -1,7 +1,8 @@
 import { HiMenuAlt4 } from 'react-icons/hi';
 import { AiOutlineClose } from 'react-icons/ai';
-import logo from '../../images/logo.png';
-import { useState } from 'react';
+import logo from '../../images/mate2.webp';
+import { useContext, useState } from 'react';
+import { TransactionContext } from '../context/TransactionContext';
 
 type NavBarItemProps = {
   title: string;
@@ -16,19 +17,23 @@ const LINKS = ['Market', 'Exchange', 'Tutorials', 'Wallets'];
 
 const Navbar = () => {
   const [toggleMenu, setToggleMenu] = useState(false);
+  const { currentAccount } = useContext(TransactionContext)
 
   return (
     <nav className="w-full flex md:justify-center justify-between items-center p-4">
-      <div className="md:flex-[0.5] flex-initial justify-center items-center">
-        <img src={logo} alt="logo" className="w-32 cursor-pointer"></img>
+      <div className="flex md:flex-[0.5] flex-initial justify-start items-center mr-16">
+        <img src={logo} alt="logo" className="w-16 cursor-pointer"></img>
+        <p className='text-white'>CryptoMate</p>
       </div>
       <ul className="text-white md:flex hidden list-none flex-row justify-between items-center flex-initial">
         {LINKS.map((item, index) => (
           <NavbarItem title={item} key={item + index} />
         ))}
-        <li className="bg-[#2952e3] py-2 px-7 mx-4 rounded-full cursor-pointer hover:bg-[#2546bd]">
-          Login
-        </li>
+        {!currentAccount && (
+          <li className="bg-[#2952e3] py-2 px-7 mx-4 rounded-full cursor-pointer hover:bg-[#2546bd]">
+            Login
+          </li>
+        )}
       </ul>
       <div className="flex relative">
         {toggleMenu ? (

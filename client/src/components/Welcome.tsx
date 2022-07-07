@@ -36,7 +36,14 @@ const Input = ({
 );
 
 const Welcome = () => {
-  const { connectWallet, currentAccount, formData, sendTransactions, handleChange  } = useContext(TransactionContext);
+  const {
+    connectWallet,
+    currentAccount,
+    formData,
+    sendTransactions,
+    handleChange,
+    isLoading,
+  } = useContext(TransactionContext);
 
   const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
     const { addressTo, amount, keyword, message } = formData;
@@ -56,13 +63,17 @@ const Welcome = () => {
             Explore the Crypto world. Buy and sell cryptocurrencies easily on
             CryptoMate.
           </p>
-          {!currentAccount && (<button
-            type="button"
-            onClick={connectWallet}
-            className="flex flex-row justify-center items-center my-5 bg-[#2952e3] p-3 rounded-full cursor-pointer hover:bg-[#2546bd]"
-          >
-            <p className="text-white text-base font-semibold">Connect Wallet</p>
-          </button>)}
+          {!currentAccount && (
+            <button
+              type="button"
+              onClick={connectWallet}
+              className="flex flex-row justify-center items-center my-5 bg-[#2952e3] p-3 rounded-full cursor-pointer hover:bg-[#2546bd]"
+            >
+              <p className="text-white text-base font-semibold">
+                Connect Wallet
+              </p>
+            </button>
+          )}
 
           <div className="grid sm:grid-cols-3 grid-cols-2 w-full mt-10">
             <div className={`rounded-tl-2xl ${commonStyles}`}>Reliability</div>
@@ -125,7 +136,7 @@ const Welcome = () => {
             />
 
             <div className="h-[1px] w-full bg-gray-400 my-2" />
-            {!currentAccount ? (
+            {isLoading ? (
               <Loader />
             ) : (
               <button
