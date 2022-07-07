@@ -30,8 +30,10 @@ const handleNoEthereum = (error: unknown) => {
   throw new Error('No ethereum object');
 };
 
-const getEthereumContract = () => {
+const getEthereumContract = async () => {
   const provider = new ethers.providers.Web3Provider(ethereum);
+  await provider.send('eth_requestAccounts', []);
+
   const signer = provider.getSigner();
   const transactionContract = new ethers.Contract(
     contractAddress,
@@ -66,7 +68,7 @@ export const TransactionProvider = ({ children }: any) => {
   const getAllTransactions = async () => {
     try {
       if (!ethereum) return alert('Please install a wallet, e.g: Metamask');
-      const transactionContract = getEthereumContract();
+      const transactionContract = await getEthereumContract();
       const availableTransactions =
         await transactionContract.getAllTransactions();
 
@@ -100,7 +102,7 @@ export const TransactionProvider = ({ children }: any) => {
       if (!ethereum) return alert('Please install a wallet, e.g: Metamask');
       const accounts = await ethereum.request({ method: 'eth_accounts' });
 
-      if (accounts.length) {
+      if (accounts.length > 0) {
         setCurrentAccount(accounts[0]);
 
         getAllTransactions();
@@ -114,7 +116,7 @@ export const TransactionProvider = ({ children }: any) => {
 
   const checkIfTransactionsExist = async () => {
     try {
-      const transactionContract = getEthereumContract();
+      const transactionContract = await getEthereumContract();
       const transactionCount = await transactionContract.getTransactionCount();
 
       window.localStorage.setItem('transactionCount', transactionCount);
@@ -139,7 +141,7 @@ export const TransactionProvider = ({ children }: any) => {
     try {
       if (!ethereum) return alert('Please install a wallet, e.g: Metamask');
       const { addressTo, amount, keyword, message } = formData;
-      const transactionContract = getEthereumContract();
+      const transactionContract = await getEthereumContract();
       const parsedAmount = ethers.utils.parseEther(amount);
 
       await ethereum.request({
